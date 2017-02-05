@@ -1,0 +1,26 @@
+{
+    "input_size": 0,
+    "output_size": 0,
+    "slice0": {
+        "type" : "conv",
+        "layers" : [[3, 3, 1, 64], [3, 3, 64, 96], [5, 5, 96, 128], [5, 5, 128, 256]],
+        "activations" : ["relu", "relu", "relu", "relu"],
+        "pooling" : ["none", "max", "none", "max"]
+    },
+    "slice1": {
+        "type" : "fc",
+        "layers" : [128, 64],
+        "activations" : ["relu", "relu"]
+    },
+    "output": {
+        "final" : "softmax",
+        "loss" : "cross_entropy"
+    },
+    "learning_rate" : 0.005,
+    "regularization" : 0.005,
+    "droput": 0.90,
+    "optimizer" : "Momentum",
+    "num_iterations": 15001,
+    "filter_data": 1,
+    "model_name" : "digit_4_extra_1"
+}
