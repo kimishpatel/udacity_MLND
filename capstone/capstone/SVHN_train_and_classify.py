@@ -180,11 +180,11 @@ if __name__ == "__main__":
 
     config = configparser.ConfigParser()
     try:
-	config.read('config.ini')
-	image_width = int(config['default']['image_width'])
-	image_height = int(config['default']['image_height'])
+    config.read('config.ini')
+    image_width = int(config['default']['image_width'])
+    image_height = int(config['default']['image_height'])
     except Exception as e:
-	print("could not read config file because ", str(e))
+    print("could not read config file because ", str(e))
     data_file = base_path+str(image_width)+'x'+str(image_height)+'/SVHN_data_shuffled.pickle' 
 
     num_iterations = [20001]

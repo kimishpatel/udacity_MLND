@@ -145,52 +145,52 @@ class LayerCake:
 
     def calculate_predictions(self, session, data):
         first = 1
-	for i in range(0, data.shape[0], self.valid_train_step):
-	    if i+self.valid_train_step < data.shape[0]: 
-	        preds = self.run_prediction(session, data[i:i+self.valid_train_step])
-	    else:
-	        preds = self.run_prediction(session, data[i:])
+    for i in range(0, data.shape[0], self.valid_train_step):
+        if i+self.valid_train_step < data.shape[0]: 
+            preds = self.run_prediction(session, data[i:i+self.valid_train_step])
+        else:
+            preds = self.run_prediction(session, data[i:])
             if first:
                 predictions = np.ndarray(shape=(data.shape[0], preds.shape[1]))
-		if i+self.valid_train_step < data.shape[0]: 
+        if i+self.valid_train_step < data.shape[0]: 
                     predictions[i:i+self.valid_train_step] = preds 
-		else:
+        else:
                     predictions[i:] = preds 
                 first = 0
             else:
-		if i+self.valid_train_step < data.shape[0]: 
-		    predictions[i:i+self.valid_train_step] = preds 
-		else:
-		    predictions[i:] = preds 
+        if i+self.valid_train_step < data.shape[0]: 
+            predictions[i:i+self.valid_train_step] = preds 
+        else:
+            predictions[i:] = preds 
         return predictions 
 
     def calculate_accuracy(self, session, data, labels, with_loss=False):
-	num_batches = 0
-	accu = 0.
-	loss = 0.
+    num_batches = 0
+    accu = 0.
+    loss = 0.
         l = 0.
-	for i in range(0, data.shape[0], self.valid_train_step):
-	    if i+self.valid_train_step < data.shape[0]: 
-	       num_batches += 1
+    for i in range(0, data.shape[0], self.valid_train_step):
+        if i+self.valid_train_step < data.shape[0]: 
+           num_batches += 1
                if with_loss:
-	           l, predictions = self.run_prediction_w_loss(session, data[i:i+self.valid_train_step], labels[i:i+self.valid_train_step])
+               l, predictions = self.run_prediction_w_loss(session, data[i:i+self.valid_train_step], labels[i:i+self.valid_train_step])
                else:
-	           predictions = self.run_prediction(session, data[i:i+self.valid_train_step])
-	       accu += accuracy(predictions, labels[i:i+self.valid_train_step])
-	       loss += l
-	    else:
-	       num_batches += 1
+               predictions = self.run_prediction(session, data[i:i+self.valid_train_step])
+           accu += accuracy(predictions, labels[i:i+self.valid_train_step])
+           loss += l
+        else:
+           num_batches += 1
                if with_loss:
-	           l, predictions = self.run_prediction_w_loss(session, data[i:], labels[i:])
+               l, predictions = self.run_prediction_w_loss(session, data[i:], labels[i:])
                else:
-	           predictions = self.run_prediction(session, data[i:])
-	       accu += accuracy(predictions, labels[i:])
-	       loss += l
-	accu = (float(accu) / float(num_batches))
+               predictions = self.run_prediction(session, data[i:])
+           accu += accuracy(predictions, labels[i:])
+           loss += l
+    accu = (float(accu) / float(num_batches))
         return loss, accu
 
     def run_training(self, num_steps, input_data, input_labels, valid_data, valid_labels, test_data, test_labels, batch_size=None, save_model=False):
-	#config = tf.ConfigProto(device_count = {'GPU':0})
+    #config = tf.ConfigProto(device_count = {'GPU':0})
         #with tf.Session(graph=self.graph, config = config) as session:
         with tf.Session(graph=self.graph) as session:
             if save_model:
@@ -232,16 +232,16 @@ class LayerCake:
                   print("Validation accuracy: %.1f%%" % validation_accuracy)
 
                   if round(validation_accuracy, 2) > round(best_val_accuracy, 2):
-		      best_val_accuracy = validation_accuracy
+              best_val_accuracy = validation_accuracy
                       _, test_accuracy = self.calculate_accuracy(session, test_data, test_labels)
                       print("Test accuracy at step %d: %.1f%%" % (step, test_accuracy))
-		      if save_model:
-			  print("Saving session at step %d"% step)
-			  saver.save(session, self.model_name, latest_filename=self.model_name+'.ckpt')
+              if save_model:
+              print("Saving session at step %d"% step)
+              saver.save(session, self.model_name, latest_filename=self.model_name+'.ckpt')
 
-	    _, test_accuracy = self.calculate_accuracy(session, test_data, test_labels)
+        _, test_accuracy = self.calculate_accuracy(session, test_data, test_labels)
             print("Test accuracy: %.1f%%" % test_accuracy)
-	    if save_model and 0:
-		print("Saving session at step %d"% step)
-		saver.save(session, self.model_name, latest_filename=self.model_name+'.ckpt')
+        if save_model and 0:
+        print("Saving session at step %d"% step)
+        saver.save(session, self.model_name, latest_filename=self.model_name+'.ckpt')
             return test_accuracy

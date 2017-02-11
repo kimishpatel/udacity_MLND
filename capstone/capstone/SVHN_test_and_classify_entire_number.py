@@ -174,15 +174,15 @@ if __name__ == "__main__":
 
     config = configparser.ConfigParser()
     try:
-	config.read('config.ini')
-	image_width = int(config['default']['image_width'])
-	image_height = int(config['default']['image_height'])
+    config.read('config.ini')
+    image_width = int(config['default']['image_width'])
+    image_height = int(config['default']['image_height'])
     except Exception as e:
-	print("could not read config file because ", str(e))
+    print("could not read config file because ", str(e))
     data_file = base_path+str(image_width)+'x'+str(image_height)+'/SVHN_data_shuffled.pickle' 
 
     if args.read_extra:
-	data_file = base_path+str(image_width)+'x'+str(image_height)+'/extra_svhn_data.pickle' 
+    data_file = base_path+str(image_width)+'x'+str(image_height)+'/extra_svhn_data.pickle' 
     dataset = read_dataset(args.read_extra)
 
     #For number of digits and for each digit generate prediction from the learnt network
