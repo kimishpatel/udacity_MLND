@@ -23,28 +23,28 @@ class SVHN_Utils:
 
     @staticmethod
     def mix_train_test_data(input_file, output_file):
-    with open(input_file, 'rb') as f:
-        data = pickle.load(f)
+        with open(input_file, 'rb') as f:
+            data = pickle.load(f)
             train_dataset = data['input_data']
             train_labels = data['input_labels']
             test_dataset = data['test_data']
-        test_labels = data['test_labels']
-    merged_data = np.ndarray(shape=(train_dataset.shape[0]+test_dataset.shape[0], train_dataset.shape[1], train_dataset.shape[2]))
-    merged_labels = np.ndarray(shape=(train_dataset.shape[0]+test_dataset.shape[0], train_labels.shape[1]))
-    merged_data[:train_dataset.shape[0],] = train_dataset
-    merged_data[train_dataset.shape[0]:,] = test_dataset
-    merged_labels[:train_dataset.shape[0],] = train_labels
-    merged_labels[train_dataset.shape[0]:,] = test_labels
+            test_labels = data['test_labels']
+        merged_data = np.ndarray(shape=(train_dataset.shape[0]+test_dataset.shape[0], train_dataset.shape[1], train_dataset.shape[2]))
+        merged_labels = np.ndarray(shape=(train_dataset.shape[0]+test_dataset.shape[0], train_labels.shape[1]))
+        merged_data[:train_dataset.shape[0],] = train_dataset
+        merged_data[train_dataset.shape[0]:,] = test_dataset
+        merged_labels[:train_dataset.shape[0],] = train_labels
+        merged_labels[train_dataset.shape[0]:,] = test_labels
 
-    random_indices = np.random.permutation(merged_data.shape[0])
-    train_dataset = merged_data[random_indices[0:train_dataset.shape[0]],...]
-    test_dataset = merged_data[random_indices[train_dataset.shape[0]:],...]
-    train_labels = merged_labels[random_indices[0:train_dataset.shape[0]],]
-    test_labels = merged_labels[random_indices[train_dataset.shape[0]:],]
-    print('train dataset size', train_dataset.shape)
-    print('train labels size', train_labels.shape)
-    train_test_data = {'input_data': train_dataset, 'input_labels': train_labels, 'test_data': test_dataset, 'test_labels': test_labels}
-    DataProcessor.dump_data(train_test_data, output_file)
+        random_indices = np.random.permutation(merged_data.shape[0])
+        train_dataset = merged_data[random_indices[0:train_dataset.shape[0]],...]
+        test_dataset = merged_data[random_indices[train_dataset.shape[0]:],...]
+        train_labels = merged_labels[random_indices[0:train_dataset.shape[0]],]
+        test_labels = merged_labels[random_indices[train_dataset.shape[0]:],]
+        print('train dataset size', train_dataset.shape)
+        print('train labels size', train_labels.shape)
+        train_test_data = {'input_data': train_dataset, 'input_labels': train_labels, 'test_data': test_dataset, 'test_labels': test_labels}
+        DataProcessor.dump_data(train_test_data, output_file)
 
     @staticmethod
     def plot_images(data, labels, num_indices, width, height, image_name):
@@ -55,14 +55,14 @@ class SVHN_Utils:
             image = data[indices[i]]
             image = image.reshape((height, width))
             print('shape ',image.shape)
-        print(image)
+            print(image)
             image = image.squeeze()
             implot = plt.imshow(image, cmap = 'Greys_r')
             a.set_title((labels[indices[i]]))
         if image_name == None:
             plt.show()
         else:
-        plt.savefig(image_name)
+            plt.savefig(image_name)
 
     @staticmethod
     def GenerateBatch(dsFile, image_dir, image_name, size=None):
@@ -133,11 +133,11 @@ class SVHN_Utils:
 if __name__ == "__main__":
     config = configparser.ConfigParser()
     try:
-    config.read('../config.ini')
-    width = int(config['default']['image_width'])
-    height = int(config['default']['image_height'])
+        config.read('../config.ini')
+        width = int(config['default']['image_width'])
+        height = int(config['default']['image_height'])
     except Exception as e:
-    print("could not read config file because ", str(e))
+        print("could not read config file because ", str(e))
     data_path = base_path+str(width)+'x'+str(height)+'/' 
     pickle_file = data_path+'SVHN_data.pickle' 
        

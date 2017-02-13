@@ -148,26 +148,24 @@ def train_network(args, cake, network, dataset, batch_sizes, num_iterations, acc
                 cake.max_steps_down = 30
                 test_accuracy = cake.run_training(num_iter, dataset.train_dataset, dataset.train_labels, 
                                 dataset.valid_dataset, dataset.valid_labels, dataset.test_dataset, dataset.test_labels, batch_size, save_model=True)
-        with open(accuracy_output_file,'a') as fd:
-            fd.write("{}: {}\n".format(args.file_name, test_accuracy))
-        fd.close()
-            if plot_mispredicts:
+                with open(accuracy_output_file,'a') as fd:
+                    fd.write("{}: {}\n".format(args.file_name, test_accuracy))
+                    fd.close()
+            if plot_mispredicts or not args.training:
                 predictions = cake.run_prediction(None, dataset.test_dataset)
-                #predictions = cake.run_prediction(cake.session, test_dataset)
                 test_acc = accuracy(predictions, dataset.test_labels)
                 print("Test accuracy: %.1f%%" % test_acc)
-                plot_mispredicts(dataset.test_dataset, predictions, dataset.test_labels)
 
 if __name__ == "__main__":
     args = parse_args()
 
     config = configparser.ConfigParser()
     try:
-    config.read('config.ini')
-    image_width = int(config['default']['image_width'])
-    image_height = int(config['default']['image_height'])
+        config.read('config.ini')
+        image_width = int(config['default']['image_width'])
+        image_height = int(config['default']['image_height'])
     except Exception as e:
-    print("could not read config file because ", str(e))
+        print("could not read config file because ", str(e))
     data_file = base_path+str(image_width)+'x'+str(image_height)+'/SVHN_data_shuffled.pickle' 
 
     num_iterations = [20001]

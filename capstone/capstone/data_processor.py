@@ -102,7 +102,7 @@ class DataProcessor:
         filtered_indices = np.where(input_labels != -1)
         input_data_positives = input_data[filtered_indices[0],...]
         input_labels_positives = input_labels[filtered_indices[0]]
-	print('Filtered dataset', input_data_positives.shape, input_labels_positives.shape)
+        print('Filtered dataset', input_data_positives.shape, input_labels_positives.shape)
         filtered_indices_negatives = np.where(input_labels == -1)
         filtered_indices_negatives = np.random.choice(filtered_indices_negatives[0], len(filtered_indices[0]))
         input_data_negatives = input_data[filtered_indices_negatives,...]
@@ -118,6 +118,6 @@ class DataProcessor:
         #now shuffle otherwise positive examples are at the begninning and -ve at the end
         output_data, output_labels = shuffle(output_data, output_labels)
 
-	print('Filtered dataset with negatives', output_data.shape, output_labels.shape)
+        print('Filtered dataset with negatives', output_data.shape, output_labels.shape)
         return output_data, output_labels 
 

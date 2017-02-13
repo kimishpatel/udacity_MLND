@@ -92,4 +92,3 @@ class ConvLayer:
             regs += tf.nn.l2_loss(weight)
         regs = regularization * regs
         return regs
-                                                                             

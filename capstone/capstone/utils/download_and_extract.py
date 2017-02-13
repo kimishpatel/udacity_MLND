@@ -3,7 +3,6 @@ import os
 import numpy as np
 import random
 import string
-import tensorflow as tf
 import zipfile
 from six.moves import range
 from six.moves.urllib.request import urlretrieve

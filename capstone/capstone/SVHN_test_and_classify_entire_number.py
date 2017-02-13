@@ -174,21 +174,20 @@ if __name__ == "__main__":
 
     config = configparser.ConfigParser()
     try:
-    config.read('config.ini')
-    image_width = int(config['default']['image_width'])
-    image_height = int(config['default']['image_height'])
+        config.read('config.ini')
+        image_width = int(config['default']['image_width'])
+        image_height = int(config['default']['image_height'])
     except Exception as e:
-    print("could not read config file because ", str(e))
+        print("could not read config file because ", str(e))
     data_file = base_path+str(image_width)+'x'+str(image_height)+'/SVHN_data_shuffled.pickle' 
 
     if args.read_extra:
-    data_file = base_path+str(image_width)+'x'+str(image_height)+'/extra_svhn_data.pickle' 
+        data_file = base_path+str(image_width)+'x'+str(image_height)+'/extra_svhn_data.pickle' 
+
     dataset = read_dataset(args.read_extra)
 
     #For number of digits and for each digit generate prediction from the learnt network
-    dir_name = 'digit_4_networks'
-    predictions = [None for i in range(5)]
-    network_filename = dir_name+"/svhn_network.json"
+    network_filename = "svhn_network_entire_number.json"
     num_labels = 10
     cake, network = load_network(network_filename)
     predictions = test_network(cake, network, dataset)
@@ -197,7 +196,7 @@ if __name__ == "__main__":
     #combine prediction according to their softmax probabilities
     for i in range(dataset.test_labels.shape[0]):
         test_output[i,] = return_predictions(predictions, i, rand=args.random)
-    ind_acc, test_acc = accuracy(test_output, dataset.test_labels, 1, dataset.test_dataset) 
+    ind_acc, test_acc = accuracy(test_output, dataset.test_labels, 0, dataset.test_dataset) 
     for i in range(6):
         print('accuracy for digit %d %f' %(i, ind_acc[i]))
     print("Test accuracy: %.1f%%" % test_acc)

@@ -127,49 +127,49 @@ class LayerCake:
             return predictions
         else:
             with tf.Session(graph=self.graph) as session:
-        self.model_name = 'entire_number'
+                self.model_name = 'entire_number'
                 saver = tf.train.Saver()
                 ckpt = tf.train.get_checkpoint_state('./', self.model_name+'.ckpt') 
                 if ckpt and ckpt.model_checkpoint_path:
                     saver.restore(session, ckpt.model_checkpoint_path)
                 predictions = self.calculate_predictions(session, input_dataset)
-                return predictions
+            return predictions
 
     def calculate_predictions(self, session, data):
-    output_predictions = np.ndarray(shape=(data.shape[0], self.output_size[0]*self.output_size[1]))
-    for i in range(0, data.shape[0], self.valid_train_step):
-        if i+self.valid_train_step < data.shape[0]: 
-           predictions = self.run_prediction(session, data[i:i+self.valid_train_step])
-           for j in range(self.output_size[0]):
-           start_index = j*self.output_size[1]
-           end_index = start_index+self.output_size[1]
-           output_predictions[i:i+self.valid_train_step,start_index:end_index] = predictions[j][:,:]
-        else:
-           predictions = self.run_prediction(session, data[i:])
-           for j in range(self.output_size[0]):
-           start_index = j*self.output_size[1]
-           end_index = start_index+self.output_size[1]
-           output_predictions[i:,start_index:end_index] = predictions[j][:,:]
+        output_predictions = np.ndarray(shape=(data.shape[0], self.output_size[0]*self.output_size[1]))
+        for i in range(0, data.shape[0], self.valid_train_step):
+            if i+self.valid_train_step < data.shape[0]: 
+                predictions = self.run_prediction(session, data[i:i+self.valid_train_step])
+                for j in range(self.output_size[0]):
+                    start_index = j*self.output_size[1]
+                    end_index = start_index+self.output_size[1]
+                    output_predictions[i:i+self.valid_train_step,start_index:end_index] = predictions[j][:,:]
+            else:
+                predictions = self.run_prediction(session, data[i:])
+                for j in range(self.output_size[0]):
+                    start_index = j*self.output_size[1]
+                    end_index = start_index+self.output_size[1]
+                    output_predictions[i:,start_index:end_index] = predictions[j][:,:]
         return output_predictions
 
     def calculate_accuracy(self, session, data, labels):
-    num_batches = 0
-    accu = 0.
-    for i in range(0, data.shape[0], self.valid_train_step):
-        if i+self.valid_train_step < data.shape[0]: 
-           num_batches += 1
-           predictions = self.run_prediction(session, data[i:i+self.valid_train_step])
-           accu += accuracy(predictions, labels[i:i+self.valid_train_step])
-        else:
-           num_batches += 1
-           predictions = self.run_prediction(session, data[i:])
-           accu += accuracy(predictions, labels[i:])
-    accu = (float(accu) / float(num_batches))
+        num_batches = 0
+        accu = 0.
+        for i in range(0, data.shape[0], self.valid_train_step):
+            if i+self.valid_train_step < data.shape[0]: 
+               num_batches += 1
+               predictions = self.run_prediction(session, data[i:i+self.valid_train_step])
+               accu += accuracy(predictions, labels[i:i+self.valid_train_step])
+            else:
+               num_batches += 1
+               predictions = self.run_prediction(session, data[i:])
+               accu += accuracy(predictions, labels[i:])
+        accu = (float(accu) / float(num_batches))
         return accu
 
     def run_training(self, num_steps, input_data, input_labels, valid_data, valid_labels, test_data, test_labels, batch_size=None, save_model = False):
         with tf.Session(graph=self.graph) as session:
-        self.model_name = 'entire_number'
+            self.model_name = 'entire_number'
             if save_model:
                 saver = tf.train.Saver()  
             self.session = session
@@ -195,9 +195,6 @@ class LayerCake:
                         offset = (step * batch_size) % (input_labels.shape[0] - batch_size)
                         batch_data = input_data[offset:(offset + batch_size), :]
                         batch_labels = input_labels[offset:(offset + batch_size), :]
-                # Prepare a dictionary telling the session where to feed the minibatch.
-                # The key of the dictionary is the placeholder node of the graph to be fed,
-                # and the value is the numpy array to feed to it.
                 feed_dict = {self.input_data : batch_data, self.input_labels : batch_labels}
                 _, l= session.run(
                   [self.optimizer, self.loss], feed_dict=feed_dict)
@@ -206,18 +203,18 @@ class LayerCake:
                     predictions[i] = session.run(
                     self.train_predictions[i], feed_dict=feed_dict)
                 if (step % 500 == 0):
-                  print("Minibatch loss at step %d: %f" % (step, l))
-                  print("Minibatch accuracy: %.1f%%" % accuracy(predictions, batch_labels))
-                  validation_accuracy = self.calculate_accuracy(session, valid_data, valid_labels)
-                  print("Validation accuracy: %.1f%%" % validation_accuracy)
+                    print("Minibatch loss at step %d: %f" % (step, l))
+                    print("Minibatch accuracy: %.1f%%" % accuracy(predictions, batch_labels))
+                    validation_accuracy = self.calculate_accuracy(session, valid_data, valid_labels)
+                    print("Validation accuracy: %.1f%%" % validation_accuracy)
 
-                  if round(validation_accuracy, 2) > round(best_val_accuracy, 2):
-              best_val_accuracy = validation_accuracy
-                      test_accuracy = self.calculate_accuracy(session, test_data, test_labels)
-                      print("Test accuracy at step %d: %.1f%%" % (step, test_accuracy))
-              if save_model:
-              print("Saving session at step %d"% step)
-              saver.save(session, self.model_name, latest_filename=self.model_name+'.ckpt')
+                    if round(validation_accuracy, 2) > round(best_val_accuracy, 2):
+                        best_val_accuracy = validation_accuracy
+                        test_accuracy = self.calculate_accuracy(session, test_data, test_labels)
+                        print("Test accuracy at step %d: %.1f%%" % (step, test_accuracy))
+                        if save_model:
+                            print("Saving session at step %d"% step)
+                            saver.save(session, self.model_name, latest_filename=self.model_name+'.ckpt')
 
             test_accuracy = self.calculate_accuracy(session, test_data, test_labels)
             print("Test accuracy: %.1f%%" % test_accuracy)
